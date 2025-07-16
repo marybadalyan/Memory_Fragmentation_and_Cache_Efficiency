@@ -1,0 +1,85 @@
+name: CMake on Windows, Linux, and WSL
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  linux-build:
+    name: Linux Build (GCC)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y build-essential cmake
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -S .
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Run Binary
+        run: ./build/your_binary
+
+  windows-build:
+    name: Windows Build (MSVC)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release -S .
+
+      - name: Build
+        run: cmake --build build --config Release
+
+      - name: Run Binary (Windows)
+        run: ./build/Release/your_binary.exe
+
+  wsl-build:
+    name: WSL Build (Ubuntu in Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build and Run in WSL
+        run: |
+          wsl bash -c "
+            sudo apt-get update &&
+            sudo apt-get install -y build-essential cmake perf &&
+            cd $(wslpath '${{ github.workspace }}') &&
+            mkdir -p wsl-build &&
+            cd wsl-build &&
+            cmake .. &&
+            make -j$(nproc) &&
+            echo '--- Running Binary ---' &&
+            ./your_binary &&
+            echo '--- Perf Stats ---' &&
+            perf stat -e cache-misses,cache-references ./your_binary
+          "
+
+    
+      - name: Run Executable
+        working-directory: ${{ steps.strings.outputs.build-output-dir }}
+        shell: bash
+        run: |
+          exe="main"
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            executable_name="${{ matrix.build_type }}/${exe}.exe"
+          else
+            executable_name="${exe}"
+          fi
+
+          echo "--------------------------------------------------"
+          echo "Running ${executable_name}..."
+
+          if [ -f "${executable_name}" ]; then
+            "./${executable_name}"
+          else
+            echo "Error: Executable not found: $(pwd)/${executable_name}"
+            exit 1
+          fi
