@@ -35,8 +35,14 @@ int main() {
         HeapFree(heap, 0, blocks[i]); // free half → fragmentation
 #else
     for (int i = 0; i < allocCount; ++i) {
-        blocks[i] = malloc(blockSize + (rand() % 128));
-        touch(blocks[i], blockSize + (rand() % 128));
+        size_t alloc_size = blockSize + (rand() % 128);
+        blocks[i] = malloc(alloc_size);
+        if (!blocks[i]) {
+        std::cerr << "malloc failed at i=" << i << std::endl;
+        exit(1);
+        }
+        touch(blocks[i], alloc_size);
+
     }
 
     for (int i = 0; i < allocCount; i += 2)
