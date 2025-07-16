@@ -22,11 +22,8 @@ jobs:
       - name: Build
         run: cmake --build build --config Release
 
-      - name: List Files
-        run: find . -type f
-
       - name: Run Binary
-        run: ./build/Release/main
+        run: ./build/main
 
   windows-build:
     name: Windows Build (MSVC)
@@ -50,7 +47,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: List Files
-        run: find . -type f
+        run: wsl find . -type f
 
       - name: Build in WSL
         shell: bash
