@@ -46,9 +46,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: List Files
-        run: wsl find . -type f
-
       - name: Build in WSL
         shell: bash
         run: |
@@ -59,8 +56,8 @@ jobs:
             cd wsl-build &&
             cmake .. &&
             make &&
-            ./main &&
-            perf stat -e cache-misses ./main
+            ./build/main &&
+            perf stat -e cache-misses ./build/main
           '
 
 
