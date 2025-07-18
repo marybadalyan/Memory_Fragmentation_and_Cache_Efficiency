@@ -74,24 +74,32 @@ jobs:
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: ctest --build-config ${{ matrix.build_type }}
 
-  
-      - name: Run Executable
+      - name: Run Platform-Specific Executables
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         shell: bash
         run: |
-          exe="main"
           if [ "$RUNNER_OS" == "Windows" ]; then
-            executable_name="${{ matrix.build_type }}/${exe}.exe"
+            executables=("main_windows" "arena_allocator" "slab_allocator")
+            bin_dir="${{ matrix.build_type }}"
+            extension=".exe"
           else
-            executable_name="${exe}"
+            executables=("main_linux" "pool_allocator" "arena_allocator")
+            bin_dir="."
+            extension=""
           fi
 
-          echo "--------------------------------------------------"
-          echo "Running ${executable_name}..."
+          for exe in "${executables[@]}"; do
+            exe_path="$bin_dir/$exe$extension"
 
-          if [ -f "${executable_name}" ]; then
-            "./${executable_name}" 
-          else
-            echo "Error: Executable not found: $(pwd)/${executable_name}"
-            exit 1
-          fi
+            echo "--------------------------------------------------"
+            echo "Looking for $exe_path ..."
+
+            if [ -f "$exe_path" ]; then
+              echo "✅ Running $exe_path"
+              "$exe_path"
+            else
+              echo "❌ Not found: $(pwd)/$exe_path"
+              exit 1
+            fi
+          done
+        echo "--------------------------------------------------"
