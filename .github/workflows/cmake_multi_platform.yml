@@ -95,10 +95,10 @@ jobs:
             echo "Looking for $exe_path ..."
 
             if [ -f "$exe_path" ]; then
-              echo "✅ Running $exe_path"
+              echo "Running $exe_path"
               "$exe_path"
             else
-              echo "❌ Not found: $(pwd)/$exe_path"
+              echo " Not found: $(pwd)/$exe_path"
               exit 1
             fi
           done
