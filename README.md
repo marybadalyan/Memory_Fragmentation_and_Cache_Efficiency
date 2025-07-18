@@ -28,17 +28,6 @@ We compare performance via:
 
 ---
 
-### 🖥️ **OS Notes (Linux vs Windows)**
-
-| Feature                        | Linux                                                    | Windows                                                      |
-| ------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------ |
-| **Profiling Tools**            | `perf`, `valgrind`, `cachegrind`, `heaptrack`            | Visual Studio Diagnostic Tools, Windows Performance Recorder |
-| **Page Commitment**            | `mmap`/`malloc` may delay page commitment until touch    | `VirtualAlloc`, lazy commit until touch                      |
-| **Memory Fragmentation Tools** | `/proc/self/status`, `smem`, `perf stat`                 | Process Explorer, VMMap, Visual Studio Tools                 |
-| **Build System**               | Works with **GCC/Clang**, **CMake**, **perf** compatible | MSVC via **CMake**, but `perf` unavailable; use VS Profiler  |
-
----
-
 ### ⚙️ **Build Instructions**
 
 ```bash
