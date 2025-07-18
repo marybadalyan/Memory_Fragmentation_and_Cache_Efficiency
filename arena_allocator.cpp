@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <chrono>
 
+constexpr size_t block_size = 64; // Size of each block
+
 class Arena {
     char* buffer;
     size_t capacity, offset;
@@ -42,7 +44,7 @@ void* touch(void* ptr, size_t size) {
     return ptr;
 }
 
-void allocate_and_perform_arithmetic(Arena& arena, size_t block_size, size_t count) {
+void allocate_and_perform_arithmetic(Arena& arena, size_t count) {
     std::vector<void*> blocks;
     for (size_t i = 0; i < count; ++i) {
         void* block = arena.allocate(block_size);
@@ -50,7 +52,7 @@ void allocate_and_perform_arithmetic(Arena& arena, size_t block_size, size_t cou
         touch(block, block_size); // Touch to ensure memory is committed
     }
 
-    long long total_sum = arena_arithmetic(static_cast<int*>(blocks[0]), block_size);
+    long long total_sum = arena_arithmetic(static_cast<int*>(blocks[0]), 1000);
     std::cout << "Total sum: " << total_sum << std::endl;
 
     // Deallocate blocks
@@ -58,11 +60,10 @@ void allocate_and_perform_arithmetic(Arena& arena, size_t block_size, size_t cou
 }
 int main(){
     std::chrono::high_resolution_clock::time_point start, end;
-    size_t block_size = 64; // Size of each block
     Arena arena(1000 * block_size); // Single arena for all blocks
 
     start = std::chrono::high_resolution_clock::now();
-    allocate_and_perform_arithmetic(arena, block_size, 1000);
+    allocate_and_perform_arithmetic(arena, 1000);
     end = std::chrono::high_resolution_clock::now();
 
     std::cout << "Time taken: " 

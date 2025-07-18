@@ -75,7 +75,6 @@ void allocate_and_perform_arithmetic(SlabAllocator<int>& slab, size_t count) {
 }
 int main(){
     std::chrono::high_resolution_clock::time_point start, end;
-    size_t block_size = 64; // Size of each block
     SlabAllocator<int> slab(block_size); // 256 objects per slab
 
     start = std::chrono::high_resolution_clock::now();

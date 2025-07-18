@@ -79,11 +79,11 @@ jobs:
         shell: bash
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            executables=("main_windows" "arena_allocator" "slab_allocator")
+            executables=("main_windows" "arena_allocator" "slab_allocator" "pool_allocator")
             bin_dir="${{ matrix.build_type }}"
             extension=".exe"
           else
-            executables=("main_linux" "pool_allocator" "arena_allocator")
+            executables=("main_linux" "pool_allocator" "arena_allocator" "slab_allocator")
             bin_dir="."
             extension=""
           fi

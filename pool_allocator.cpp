@@ -5,6 +5,8 @@
 #include <cstring>
 
 
+constexpr size_t block_size = 64; // Size of each block
+
 class PoolAllocator {
     char* pool;
     size_t block_size, total_blocks;
@@ -40,7 +42,7 @@ long long arithmetic_sum(int* data, size_t count) {
     return sum;
 }
 
-long long pool_arithmetic(std::vector<void*>& blocks, size_t block_size) {
+long long pool_arithmetic(std::vector<void*>& blocks) {
     long long sum = 0;
     for (void* ptr : blocks) {
         int* data = static_cast<int*>(ptr);
@@ -55,7 +57,7 @@ void* touch(void* ptr, size_t size) {
     return ptr;
 }
 
-void allocate_and_perform_arithmetic(PoolAllocator& allocator, size_t block_size, size_t count) {
+void allocate_and_perform_arithmetic(PoolAllocator& allocator, size_t count) {
     std::vector<void*> blocks;
     for (size_t i = 0; i < count; ++i) {
         void* block = allocator.allocate();
@@ -63,7 +65,7 @@ void allocate_and_perform_arithmetic(PoolAllocator& allocator, size_t block_size
         touch(block, block_size); // Touch to ensure memory is committed
     }
 
-    long long total_sum = pool_arithmetic(blocks, block_size);
+    long long total_sum = pool_arithmetic(blocks);
     std::cout << "Total sum: " << total_sum << std::endl;
 
     // Deallocate blocks
@@ -73,11 +75,10 @@ void allocate_and_perform_arithmetic(PoolAllocator& allocator, size_t block_size
 }
 int main(){
     std::chrono::high_resolution_clock::time_point start, end;
-    size_t block_size = 64; // Size of each block
     PoolAllocator allocator(block_size, 1000); // 1000 blocks
 
     start = std::chrono::high_resolution_clock::now();
-    allocate_and_perform_arithmetic(allocator, block_size, 1000);
+    allocate_and_perform_arithmetic(allocator, 1000);
     end = std::chrono::high_resolution_clock::now();
 
     std::cout << "Time taken: " 
