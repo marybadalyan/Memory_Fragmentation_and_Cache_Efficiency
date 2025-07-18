@@ -1,23 +1,63 @@
-1. Pool Allocator — Focus on Fixed Size, High-Frequency Allocations
+## 📄 **README: Custom Memory Allocator Comparison**
 
-A Pool Allocator manages a pool (preallocated block) of fixed-size memory chunks. All allocations are of the same size, and allocation/freeing is extremely fast because it just pulls from or returns to a free list.
-General-purpose allocators like malloc() are slow and cause fragmentation when dealing with many small, same-sized allocations.
-Pools optimize for speed and predictability by preallocating space for many objects.
-Only works efficiently when you allocate same-size objects.
+### 🚀 **Project Overview**
 
+This project demonstrates and benchmarks **custom memory allocators**:
 
+* **Pool Allocator**
+* **Arena Allocator**
+* **Slab Allocator**
 
-2. Arena Allocator — Focus on Bulk Allocation and Fast Reset
+These allocator designs help manage memory more efficiently than standard `malloc`/`new`, especially in performance-critical systems like game engines, embedded systems, or high-performance services.
 
-An Arena Allocator preallocates a large block of memory (the arena) and handles all allocations linearly within it. You don’t free individual allocations — you reset the whole arena at once.
-Ideal for short-lived objects in batch-like processing where you can discard everything at once.
-Removes overhead of tracking individual allocations/frees.
-Cannot selectively free objects; all are freed together.
+We compare performance via:
 
+* Allocation speed
+* Arithmetic operation speed on allocated memory
+* Cache locality and fragmentation impact
 
-Slab Allocator — Focus on Grouping Same-Type Objects Efficiently
-What is it?
-A Slab Allocator organizes memory into slabs, each of which contains many objects of the same type/size. Within a slab, objects are allocated and freed individually, but the memory layout is optimized to reuse freed space effectively.
-Prevents fragmentation by allocating objects in fixed-size blocks.
+---
 
-Best suited for objects of consistent size; managing slabs of different types can be complex.
+### 📚 **What Are These Allocators?**
+
+| Allocator           | Description                                                                                      | Use Cases                                 |
+| ------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| **Pool Allocator**  | Allocates **fixed-size small objects** from a pre-allocated pool. Fast, O(1) allocations.        | Small, frequent allocations, object pools |
+| **Arena Allocator** | Allocates **large chunks (arenas)** and performs **linear allocations** within them.             | Fast bulk allocations, resets in bulk     |
+| **Slab Allocator**  | Organizes memory into **slabs** of blocks; useful for managing objects of similar type and size. | Kernel allocators, caching, object reuse  |
+
+---
+
+### 🖥️ **OS Notes (Linux vs Windows)**
+
+| Feature                        | Linux                                                    | Windows                                                      |
+| ------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------ |
+| **Profiling Tools**            | `perf`, `valgrind`, `cachegrind`, `heaptrack`            | Visual Studio Diagnostic Tools, Windows Performance Recorder |
+| **Page Commitment**            | `mmap`/`malloc` may delay page commitment until touch    | `VirtualAlloc`, lazy commit until touch                      |
+| **Memory Fragmentation Tools** | `/proc/self/status`, `smem`, `perf stat`                 | Process Explorer, VMMap, Visual Studio Tools                 |
+| **Build System**               | Works with **GCC/Clang**, **CMake**, **perf** compatible | MSVC via **CMake**, but `perf` unavailable; use VS Profiler  |
+
+---
+
+### ⚙️ **Build Instructions**
+
+```bash
+# Clone the repository
+git clone Memory_Fragmentation_and_Cache_Efficiency
+cd Memory_Fragmentation_and_Cache_Efficiency
+# Create build directory and compile
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+./build/... /...
+
+```
+### 🚀 **Running the Programs**
+
+| Executable        | Description                          | Example Command     |
+| ----------------- | ------------------------------------ | ------------------- |
+| `main`            | General performance runner           | `./main`            |
+| `arena_allocator` | Arena allocator allocation benchmark | `./arena_allocator` |
+| `slab_allocator`  | Slab allocator benchmark             | `./slab_allocator`  |
+| `pool_allocator`  | Pool allocator benchmark             | `./pool_allocator`  |
+
+---
