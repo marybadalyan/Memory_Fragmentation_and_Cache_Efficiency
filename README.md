@@ -16,6 +16,17 @@ We compare performance via:
 * Arithmetic operation speed on allocated memory
 * Cache locality and fragmentation impact
 
+
+The goal is to understand how these allocators manage memory **more efficiently** in specific scenarios by:
+
+* **Reducing memory fragmentation**
+* **Improving cache locality**
+* **Minimizing allocation overhead**
+
+This project provides **clean, isolated implementations** of each allocator and includes **simple arithmetic workloads** to test their practical impact on allocation speed and memory access performance.
+
+The project also includes **build scripts** (CMake) to make it portable across **Linux (GCC/Clang)** and **Windows (MSVC)**, along with profiling instructions for analyzing performance using tools like `perf`, `valgrind`, and **Visual Studio Profiler**.
+
 ---
 
 ### 📚 **What Are These Allocators?**
